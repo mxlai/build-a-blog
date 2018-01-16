@@ -8,11 +8,15 @@
     {% else %}
 
         {% for entry in entries %}
-        <li>
-            <h2>{{entry.title}}</h2>
-            <p style="display:inline-block">{{entry.body}}</p>
-        </li>
-        <hr />
+        <ul>
+            <li>
+                <h2>
+                    <a href="/blog?id={{entry.id}}">{{entry.title}}</a>
+                </h2>
+                <p style="display:inline-block">{{entry.body}}</p>
+            </li>
+            <hr />
+        </ul>
         {% endfor %}
 
     {% endif %}

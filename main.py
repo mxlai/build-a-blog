@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -14,10 +15,12 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(9999))
+    pub_date = db.Column(db.DateTime)
 
     def __init__(self, title, body):
         self.title = title
         self.body = body
+        self.pub_date = datetime.utcnow()
 
 
 def is_empty(string):
@@ -40,21 +43,35 @@ def add_entry():
         else:
             db.session.add(new_entry)
             db.session.commit()
-            return redirect('/blog')
+            url_id = str(new_entry.id)
+            return redirect('/blog?id=' + url_id)
 
     else:
-        return render_template('newpost.html', title="Add a Blog Entry")
+        return render_template(
+        'newpost.html', 
+        title="Add a Blog Entry"
+        )
 
 
 @app.route('/blog', methods=['POST', 'GET'])
 def show_entries():
     
-    entries = Blog.query.all()
-    return render_template(
-        'blog.html', 
+    entry_id = request.args.get('id')
+    if (entry_id):
+        entry = Blog.query.get(entry_id)
+        return render_template(
+        'blogpost.html', 
         title="Build a Blog", 
-        entries=entries
-        )    
+        entry=entry
+        )
+
+    else:
+        entries = Blog.query.order_by(Blog.pub_date.desc()).all()
+        return render_template(
+            'blog.html', 
+            title="Build a Blog", 
+            entries=entries
+            )    
 
 
 @app.route('/', methods=['POST', 'GET'])

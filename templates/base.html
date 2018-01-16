@@ -2,18 +2,13 @@
 <html>
     <head>
         <title>{{title}}</title>
-        <style>
-                .error {
-                    color: red;
-                }
-            </style>
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/mainpage.css')}}">
     </head>
 <body>
     <div>
-        <a href='/blog'>Main Blog Page</a>
-        <a href='/newpost'>Add a Blog Entry</a>
+        <a class="nav" href='/blog'>Main Blog Page</a>
+        <a class="nav" href='/newpost'>Add a Blog Entry</a>
     </div>
-
     
     {% with messages = get_flashed_messages(with_categories=True) %}
         <ul>
